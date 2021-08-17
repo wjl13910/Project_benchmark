@@ -1,7 +1,6 @@
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
-from pandas.core.base import DataError
 from scipy.optimize import curve_fit
 import pandas as pd
 
@@ -9,14 +8,13 @@ import pandas as pd
 def load_data(filepath):
     """Load data filepath can be a String.
 
-    The follwing algoright is taking a file path as an argument and ruturn a list of lists. In the case of not exist
-    filepath the function will raise an error of type FileNotFoundError and with an appropriate message.
+    The follwing algoright is taking a file path as an argument and ruturn a list of lists. In the case of not exist filepath the function will raise an error of type FileNotFoundError and with an appropriate message.
     We are casting the str to Path. Because when the user run it through command line the argument is comming as str.
 
     Parameters
     ----------
     filepath : str
-        A given filepath, such C:Users/Documents/Data/samples.csv or C:Users/Documents/Data/weights.csv
+        A given filepath
 
     Returns
     -------
@@ -40,34 +38,45 @@ def load_data(filepath):
     return data
 
 
-def fitting(x, target_value, model_function, fitting_method, type_of_fit):
+def fitting(x_value, target_value, model_function, fitting_method, type_of_fit):
     """
     This is the function for fitting the timing data.
 
 
     Parameters
     ----------
-    type_of_fit : str
-        A type of the fitting options:{'CPU', 'MB', 'IB'}
+    x_value: list
+        A given list of x_value data
+    target_value: list
+        A given list contans target fitting time data
     model_function: function
-        Options:{model_function, model_function_3variables}
+        Model for fitting the target time data
+    type_of_fit : str
+        The type of the data used to do fitting. options:{'CPU', 'MB', 'MPI'}
     fitting_method: str
         The method used to fit the data. The value can only been chosen from options:{'dogbox', 'lm', 'trf'}.
 
 
     Returns
     -------
-    parameters : numpy.ndarray
-        The data of fitting results. 
-    """
-    if len(target_value) != len(x):
-        raise ValueError("Value length not match")
-    fig = plt.figure()
-    # three possible methods are: dogbox, lm, trf
-    parameters, covariance = curve_fit(
-        model_function, x, target_value, method=fitting_method)
+    parameters : list
+        List of fitting parameters.
 
-    xspace = np.linspace(x[0], x[len(x) - 1], 100)
+
+    Raise
+    -----
+    ValueError
+        Raise an ValueError if the given x_value does not match the length of target_value
+    """
+    if len(target_value) != len(x_value):
+        raise ValueError("Value length not match")
+
+    fig = plt.figure()
+
+    parameters, _ = curve_fit(
+        model_function, x_value, target_value, method=fitting_method)
+
+    xspace = np.linspace(x_value[0], x_value[len(x_value) - 1], 100)
     if len(parameters) == 1:
         fit_A = parameters[0]
         fit_curve = model_function(xspace, fit_A)
@@ -83,38 +92,63 @@ def fitting(x, target_value, model_function, fitting_method, type_of_fit):
     else:
         raise ValueError("Function do not support that Model")
 
-    plt.plot(x, target_value, 'o', label='cpu')
+    # making plot
+    plt.plot(x_value, target_value, 'o', label='cpu')
     plt.plot(xspace, fit_curve, '-', label='fit')
-    plt.xlabel("x")
+    plt.xlabel("cores_per_node")
     plt.ylabel("time/s")
     plt.title(type_of_fit + "_Fitting Plot")
     plt.legend()
     plt.savefig(type_of_fit + "_fit.jpg")
     plt.close()
-    #perr = np.sqrt(np.diag(covariance))
+
     return parameters
 
 
-def calculate_rmse(x, target_value, model_function, fit_parameters):
+def calculate_rmse(x_value, target_value, model_function, fit_parameters):
     """
     This function works to produce the Root Mean Squard Error of the fit against the original data.
+
+
+    Parameters
+    ----------
+    x_value: list
+        A given list of x_value data
+    target_value: list
+        A given list contans target fitting time data
+    model_function: function
+        Model for fitting the target time data
+    fit_parameters: list
+        List of fitting parameters.
+
+
+    Returns
+    -------
+    RMSE : double
+        Root Mean Squard Error of the fitting result.
+
+
+    Raise
+    -----
+    ValueError
+        Raise an ValueError if the given x_value does not match the length of target_value
     """
-    if len(target_value) != len(x):
+    if len(target_value) != len(x_value):
         raise ValueError("Value length not match")
 
     n = len(fit_parameters)
     if n == 1:
         fit_A = fit_parameters[0]
-        fit_value = model_function(x, fit_A)
+        fit_value = model_function(x_value, fit_A)
     elif n == 2:
         fit_A = fit_parameters[0]
         fit_B = fit_parameters[1]
-        fit_value = model_function(x, fit_A, fit_B)
+        fit_value = model_function(x_value, fit_A, fit_B)
     elif n == 3:
         fit_A = fit_parameters[0]
         fit_B = fit_parameters[1]
         fit_C = fit_parameters[2]
-        fit_value = model_function(x, fit_A, fit_B, fit_C)
+        fit_value = model_function(x_value, fit_A, fit_B, fit_C)
     else:
         raise ValueError("Function do not support that model")
 
@@ -122,30 +156,58 @@ def calculate_rmse(x, target_value, model_function, fit_parameters):
     return RMSE
 
 
-def general_plot(general_data, system_information, figsize=(7, 5)):
+def general_plot(general_data, system_information, x_value_type, figsize=(7, 5)):
     """
     This function is works for ploting the general time graph.
+
+
+    Parameters
+    ----------
+    general_data: pd.DataFrame
+        A given DataFrame of all the data in *.csv
+    system_information: str
+        A given system name for define the plot
+    x_value_type: str
+        A given type of x value for different x label. Which can only be chosen from:{'nodes_cores', 'x_value'}
+    figsize: tuple,optional
+        Figsize of the plot
+
+
+    Raise
+    -----
+    ValueError
+        Raise an ValueError if the given x_value_type does not match the given options
+
 
     """
 
     fig = plt.figure(figsize=figsize)
-    # prepare data for plotting
-    # NOTE: To make this function work, the x_label data can only be in the first order as we do in here.
+
+    # NOTE: To make this function work, the x_label and x value data can only be in the same order as we do in here.
+    # prepare data
 
     keys = general_data.keys()
-    x_label = general_data[keys[0]]
+
+    if x_value_type == 'nodes_cores':
+        x_label = general_data[keys[0]]
+    elif x_value_type == 'x_value':
+        x_label = general_data[keys[5]]
+    else:
+        raise ValueError("Unsupport x_value_type input")
+
     T_first = general_data[keys[1]]
     T_second = general_data[keys[2]]
     T_third = general_data[keys[3]]
     T_fourth = general_data[keys[4]]
 
+    # making plot
     plt.plot(x_label, T_first, '.-', label=keys[1])
     plt.plot(x_label, T_second, '.-', label=keys[2])
     plt.plot(x_label, T_third, '.-', label=keys[3])
     plt.plot(x_label, T_fourth, '.-', label=keys[4])
     plt.legend()
 
-    title = system_information + " General Time"
+    title = system_information + " General Time " + "(" + x_value_type + ")"
     plt.title(title)
     plt.xlabel("nodes_cores")
     plt.ylabel("time/s")
@@ -158,27 +220,59 @@ def general_plot(general_data, system_information, figsize=(7, 5)):
 def overall_workflow(filepath, system_information, model_function, model_function_for_ib, fitting_method):
     """
     This workflow function helps to do the overall fit and plot in one time, which is the combination of all above functionality. To use this function, your data format should strictly follows the pattern we used, namely the headings, "x label,MPI Time,Memory time,CPU time,Total Time,x".
-    """
-    data = load_data(filepath)
-    x = data["x"]
-    general_plot(data, system_information)
 
+    Parameters
+    ----------
+    filepath : str
+        A given filepath    
+    system_information: str
+        A given system name for define the plot
+    model_function: function
+        Model for fitting the target time data   
+    model_function_for_ib: function
+        Model for fitting the target time data perticular for InifiniBnad
+    fit_parameters: list
+        List of fitting parameters.
+
+    Returns
+    -------
+    overall_rmse : list
+        A list contants all the Root Mean Squard Error of the fitting results.
+    parameters: list of lists
+        A list contants all the parameter used for fitting in order.
+    """
+    # load data
+    data = load_data(filepath)
+
+    x = data["x"]
+
+    general_plot(data, system_information, "x_value")
+    general_plot(data, system_information, "nodes_cores")
+
+    parameters = []
+    overall_rmse = []
     # cpu fit
     cpu_parameters = fitting(
         x, data["CPU Time"], model_function, fitting_method, system_information + "_CPU")
     cpu_rmse = calculate_rmse(
         x, data["CPU Time"], model_function, cpu_parameters)
+    parameters.append(cpu_parameters)
+    overall_rmse.append(cpu_rmse)
 
-    # mb_fit
+    # mb fit
     mb_parameters = fitting(
         x, data["Memory Time"], model_function, fitting_method, system_information + "_memory")
     mb_rmse = calculate_rmse(
         x, data["Memory Time"], model_function, mb_parameters)
+    parameters.append(mb_parameters)
+    overall_rmse.append(mb_rmse)
 
-    # IB
+    # ib fit
     ib_parameters = fitting(
         x, data["MPI Time"], model_function_for_ib, fitting_method, system_information + "_IB")
     ib_rmse = calculate_rmse(
         x, data["MPI Time"], model_function_for_ib, ib_parameters)
-    overall_rmse = [cpu_rmse, mb_rmse, ib_rmse]
-    return overall_rmse
+    parameters.append(ib_parameters)
+    overall_rmse.append(ib_rmse)
+
+    return parameters, overall_rmse
