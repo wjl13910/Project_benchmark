@@ -132,6 +132,8 @@ def calculate_rmse(x_value, target_value, model_function, fit_parameters):
     -----
     ValueError
         Raise an ValueError if the given x_value does not match the length of target_value
+    ValueError
+        Raise an ValueError if the given model_function is unsupported
     """
     if len(target_value) != len(x_value):
         raise ValueError("Value length not match")
@@ -156,15 +158,15 @@ def calculate_rmse(x_value, target_value, model_function, fit_parameters):
     return RMSE
 
 
-def general_plot(general_data, system_information, x_value_type, figsize=(7, 5)):
+def general_plot(filepath, system_information, x_value_type, figsize=(7, 5)):
     """
     This function is works for ploting the general time graph.
 
 
     Parameters
     ----------
-    general_data: pd.DataFrame
-        A given DataFrame of all the data in *.csv
+    filepath : str
+        A given filepath    
     system_information: str
         A given system name for define the plot
     x_value_type: str
@@ -180,7 +182,7 @@ def general_plot(general_data, system_information, x_value_type, figsize=(7, 5))
 
 
     """
-
+    general_data = load_data(filepath)
     fig = plt.figure(figsize=figsize)
 
     # NOTE: To make this function work, the x_label and x value data can only be in the same order as we do in here.
@@ -209,7 +211,7 @@ def general_plot(general_data, system_information, x_value_type, figsize=(7, 5))
 
     title = system_information + " General Time " + "(" + x_value_type + ")"
     plt.title(title)
-    plt.xlabel("nodes_cores")
+    plt.xlabel(x_value_type)
     plt.ylabel("time/s")
     fig.autofmt_xdate()
 
@@ -219,7 +221,7 @@ def general_plot(general_data, system_information, x_value_type, figsize=(7, 5))
 
 def overall_workflow(filepath, system_information, model_function, model_function_for_ib, fitting_method):
     """
-    This workflow function helps to do the overall fit and plot in one time, which is the combination of all above functionality. To use this function, your data format should strictly follows the pattern we used, namely the headings, "x label,MPI Time,Memory time,CPU time,Total Time,x".
+    This workflow function helps to do the overall fit, which is the combination of the above data fitting functionality. To use this function, the data format should strictly follows the pattern we used, namely the headings, "x label,MPI Time,Memory time,CPU time,Total Time,x".
 
     Parameters
     ----------
@@ -246,8 +248,8 @@ def overall_workflow(filepath, system_information, model_function, model_functio
 
     x = data["x"]
 
-    general_plot(data, system_information, "x_value")
-    general_plot(data, system_information, "nodes_cores")
+    # general_plot(data, system_information + " x_value", "x_value")
+    # general_plot(data, system_information + " nodes_cores", "nodes_cores")
 
     parameters = []
     overall_rmse = []

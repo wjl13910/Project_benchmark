@@ -1,59 +1,35 @@
-from pathlib import Path
-import numpy as np
-import matplotlib.pyplot as plt
-from pandas.core.base import DataError
-from scipy.optimize import curve_fit
-import pandas as pd
-
-
 from models import model_function1, model_function2, model_function3, model_function4
-from benchmark import load_data, fitting, calculate_rmse, general_plot, overall_workflow
+from benchmark import overall_workflow, general_plot
+
+# optionally you could import other functions in the benchmark module such as:
+# from benchmark import load_data, fitting, calculate_rmse, general_plot
 
 
-syklake_data = load_data("./skylake_data.csv")
-
-x = syklake_data["x"]
-
-
-# general plot
-general_plot(syklake_data, "Skylake")
-
-# CPU
-# three possible methods are: dogbox, lm, trf
-cpu_parameters1 = fitting(
-    x, syklake_data["CPU Time"], model_function1, "dogbox", "cpu_model1")
-cpu_parameters2 = fitting(
-    x, syklake_data["CPU Time"], model_function2, "dogbox", "cpu_model2")
-
-cpu_rmse1 = calculate_rmse(
-    x, syklake_data["CPU Time"], model_function1, cpu_parameters1)
-cpu_rmse2 = calculate_rmse(
-    x, syklake_data["CPU Time"], model_function2, cpu_parameters2)
-
-# MB
-mb_parameters1 = fitting(
-    x, syklake_data["Memory Time"], model_function1, "lm", "memory_model1")
-mb_parameters2 = fitting(
-    x, syklake_data["Memory Time"], model_function2, "lm", "memory_model2")
-
-mb_rmse1 = calculate_rmse(
-    x, syklake_data["Memory Time"], model_function1, mb_parameters1)
-mb_rmse2 = calculate_rmse(
-    x, syklake_data["Memory Time"], model_function2, mb_parameters2)
-
-# IB
-ib_parameters1 = fitting(
-    x, syklake_data["MPI Time"], model_function3, "lm", "IB_model3")
-ib_parameters2 = fitting(
-    x, syklake_data["MPI Time"], model_function4, "lm", "IB_model4")
-
-ib_rmse1 = calculate_rmse(
-    x, syklake_data["MPI Time"], model_function3, ib_parameters1)
-ib_rmse2 = calculate_rmse(
-    x, syklake_data["MPI Time"], model_function4, ib_parameters2)
+# data readin
+skylake_data = "./skylake_data.csv"
+icelake_total_data = "./icelake_data.csv"
+icelake_ordered_data = "./icelake_data2.csv"
 
 
-# filepath = "./skylake_data.csv"
+# make general plot
+general_plot(skylake_data, "Skylake", "x_value")
+general_plot(icelake_total_data, "Icelake", "nodes_cores")
+general_plot(icelake_ordered_data, "Icelake", "x_value")
 
-# overall_workflow(filepath, "Skylake", model_function2,
-#                  model_function4, "lm")
+
+# make plot with different estimate models and compare their RMSE errors
+parameters1, overall_rmse1 = overall_workflow(
+    skylake_data, "Skylake_model_2_and_4", model_function2, model_function4, "lm")
+
+parameters2, overall_rmse2 = overall_workflow(
+    skylake_data, "Skylake_model_1_and_3", model_function1, model_function3, "lm")
+
+# print the result for analysing
+print("CPU                    MB                       IB")
+print("RMSE from the model 2 and model 4")
+print(overall_rmse1)
+print("----------------------------------")
+print("RMSE from the model 1 and model 3")
+print(overall_rmse2)
+
+# Accroding to the RMSE results. model 2 and model 4 are better than model 1 and 3.
