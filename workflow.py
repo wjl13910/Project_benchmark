@@ -6,9 +6,9 @@ from benchmark import overall_workflow, general_plot
 
 
 # data readin
-skylake_data = "./skylake_data.csv"
-icelake_total_data = "./icelake_data.csv"
-icelake_ordered_data = "./icelake_data2.csv"
+skylake_data = "./data/skylake_data.csv"
+icelake_total_data = "./data/icelake_data.csv"
+icelake_ordered_data = "./data/icelake_data2.csv"
 
 
 # make general plot
