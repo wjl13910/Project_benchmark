@@ -4,11 +4,13 @@ These suite of code are working for build plots and make fitting. There is also 
 
 This work is done by Jianyue Wang(Student number 20046304) as a part of UCL individual project: Characterise Exscale Testbed.
 
-## Data 
+## Data
 
 The data file in this project is the timeing data by running MILC code on Skylake and Icelake system along with Armforge profiling tools.
 
-To use the module for later works, data should follow some particular format. Which could be seen in the sample csv files. First, the data file should follow a csv format. Then, it would the best if the heading of the data follow this pattern: x label,MPI Time,Memory time,CPU time,Total Time,x. 
+To use the module for later works, data should follow some particular format. Which could be seen in the sample csv files. First, the data file should follow a csv format. Then, it would the best if the heading of the data follow this pattern: x label,MPI Time,Memory time,CPU time,Total Time,x.
+
+For each heading, x label have the form of n()_p() which represent that number of nodes and number of processors(cores) pre node. MPI, CPU, and Memory Time is taken from the Armforge profiling reports, which collect related data during the MILC code runtime. The "x" value could be calculated as: total number of cores used for job divided by the maximum number of cores in that system node.
 
 ## Documentation
 
