@@ -30,8 +30,7 @@ def load_data(filepath):
 
     file_path_casted = Path(filepath)
     if not file_path_casted.exists():
-        raise FileNotFoundError(
-            "The file does not exist, check the given argument.")
+        raise FileNotFoundError("File does not exist.")
 
     data = pd.read_csv(filepath, delimiter=",")
 
@@ -59,7 +58,7 @@ def fitting(x_value, target_value, model_function, fitting_method, type_of_fit):
 
     Returns
     -------
-    parameters : list
+    parameters : numpy.array
         List of fitting parameters.
 
 
@@ -118,7 +117,7 @@ def calculate_rmse(x_value, target_value, model_function, fit_parameters):
         A given list contans target fitting time data
     model_function: function
         Model for fitting the target time data
-    fit_parameters: list
+    fit_parameters: numpy.array
         List of fitting parameters.
 
 
@@ -233,7 +232,7 @@ def overall_workflow(filepath, system_information, model_function, model_functio
         Model for fitting the target time data   
     model_function_for_ib: function
         Model for fitting the target time data perticular for InifiniBnad
-    fit_parameters: list
+    fit_parameters: numpy.array
         List of fitting parameters.
 
     Returns
