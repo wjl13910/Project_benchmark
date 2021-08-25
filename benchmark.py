@@ -218,7 +218,7 @@ def general_plot(filepath, system_information, x_value_type, figsize=(7, 5)):
     plt.close()
 
 
-def overall_workflow(filepath, system_information, model_function, model_function_for_ib, fitting_method):
+def overall_fitting(filepath, system_information, model_function, model_function_for_ib, fitting_method):
     """
     This workflow function helps to do the overall fit, which is the combination of the above data fitting functionality. To use this function, the data format should strictly follows the pattern we used, namely the headings, "x label,MPI Time,Memory time,CPU time,Total Time,x".
 
@@ -277,3 +277,65 @@ def overall_workflow(filepath, system_information, model_function, model_functio
     overall_rmse.append(ib_rmse)
 
     return parameters, overall_rmse
+
+
+def predict(x_value, target_value, model_function, parameters, title):
+    """
+    This function works for make prediction.
+    Parameters
+    ----------
+    x_value: list
+        A given list of x_value data
+    target_value: list
+        A given list contans target fitting time data
+    model_function: function
+        Model for fitting the target time data
+    parameters: numpy.array
+        List of fitting parameters.  
+    title: str
+        A given title name of the plot
+
+
+    Returns
+    -------
+    predict_value: numpy.array
+        Array contans all the predict value
+
+    Raise
+    -----
+    ValueError
+        Raise an ValueError if the given x_value does not match the length of target_value
+    ValueError
+        Raise an ValueError if the given model_function is unsupported
+
+    """
+    if len(target_value) != len(x_value):
+        raise ValueError("Value length not match")
+
+    n = len(parameters)
+    if n == 1:
+        parameter_a = parameters[0]
+        predict_value = model_function(x_value, parameter_a)
+    elif n == 2:
+        parameter_a = parameters[0]
+        parameter_b = parameters[1]
+        predict_value = model_function(x_value, parameter_a, parameter_b)
+    elif n == 3:
+        parameter_a = parameters[0]
+        parameter_b = parameters[1]
+        parameter_c = parameters[2]
+        predict_value = model_function(
+            x_value, parameter_a, parameter_b, parameter_c)
+    else:
+        raise ValueError("Function do not support that model")
+
+    plt.plot(x_value, predict_value, '.--', label="predict data")
+    plt.plot(x_value, target_value, '.-', label='experiment data')
+    plt.title(title)
+    plt.xlabel('x_value')
+    plt.ylabel("time/s")
+    plt.legend()
+    plt.savefig(title + ".jpg")
+    plt.close()
+
+    return predict_value

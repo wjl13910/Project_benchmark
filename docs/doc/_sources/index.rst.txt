@@ -5,12 +5,13 @@
 
 Welcome to Project Benchmark's documentation!
 =============================================
+This is a sphinx document that will provide information about the benchmark.py file.
 
 .. toctree::
    :maxdepth: 2
    
 
-   /content/benchmark
+   /content/benchmark-docs.rst
 
 
 Indices and tables

@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Benchmark Documentation &#8212; Project Benchmark  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Welcome to Project Benchmark’s documentation!" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-benchmark">
+<span id="benchmark-documentation"></span><h1>Benchmark Documentation<a class="headerlink" href="#module-benchmark" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="benchmark.calculate_rmse">
+<code class="sig-prename descclassname">benchmark.</code><code class="sig-name descname">calculate_rmse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_value</span></em>, <em class="sig-param"><span class="n">target_value</span></em>, <em class="sig-param"><span class="n">model_function</span></em>, <em class="sig-param"><span class="n">fit_parameters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#benchmark.calculate_rmse" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function works to produce the Root Mean Squard Error of the fit against the original data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_value: list</strong></dt><dd><p>A given list of x_value data</p>
+</dd>
+<dt><strong>target_value: list</strong></dt><dd><p>A given list contans target fitting time data</p>
+</dd>
+<dt><strong>model_function: function</strong></dt><dd><p>Model for fitting the target time data</p>
+</dd>
+<dt><strong>fit_parameters: numpy.array</strong></dt><dd><p>List of fitting parameters.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>RMSE</strong><span class="classifier">double</span></dt><dd><p>Root Mean Squard Error of the fitting result.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="benchmark.fitting">
+<code class="sig-prename descclassname">benchmark.</code><code class="sig-name descname">fitting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_value</span></em>, <em class="sig-param"><span class="n">target_value</span></em>, <em class="sig-param"><span class="n">model_function</span></em>, <em class="sig-param"><span class="n">fitting_method</span></em>, <em class="sig-param"><span class="n">type_of_fit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#benchmark.fitting" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the function for fitting the timing data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_value: list</strong></dt><dd><p>A given list of x_value data</p>
+</dd>
+<dt><strong>target_value: list</strong></dt><dd><p>A given list contans target fitting time data</p>
+</dd>
+<dt><strong>model_function: function</strong></dt><dd><p>Model for fitting the target time data</p>
+</dd>
+<dt><strong>type_of_fit</strong><span class="classifier">str</span></dt><dd><p>The type of the data used to do fitting. options:{‘CPU’, ‘MB’, ‘MPI’}</p>
+</dd>
+<dt><strong>fitting_method: str</strong></dt><dd><p>The method used to fit the data. The value can only been chosen from options:{‘dogbox’, ‘lm’, ‘trf’}.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>parameters</strong><span class="classifier">numpy.array</span></dt><dd><p>List of fitting parameters.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="benchmark.general_plot">
+<code class="sig-prename descclassname">benchmark.</code><code class="sig-name descname">general_plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filepath</span></em>, <em class="sig-param"><span class="n">system_information</span></em>, <em class="sig-param"><span class="n">x_value_type</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">(7, 5)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#benchmark.general_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is works for ploting the general time graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath</strong><span class="classifier">str</span></dt><dd><p>A given filepath</p>
+</dd>
+<dt><strong>system_information: str</strong></dt><dd><p>A given system name for define the plot</p>
+</dd>
+<dt><strong>x_value_type: str</strong></dt><dd><p>A given type of x value for different x label. Which can only be chosen from:{‘nodes_cores’, ‘x_value’}</p>
+</dd>
+<dt><strong>figsize: tuple,optional</strong></dt><dd><p>Figsize of the plot</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="benchmark.load_data">
+<code class="sig-prename descclassname">benchmark.</code><code class="sig-name descname">load_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filepath</span></em><span class="sig-paren">)</span><a class="headerlink" href="#benchmark.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load data filepath can be a String.</p>
+<p>The follwing algoright is taking a file path as an argument and ruturn a list of lists. In the case of not exist filepath the function will raise an error of type FileNotFoundError and with an appropriate message.
+We are casting the str to Path. Because when the user run it through command line the argument is comming as str.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath</strong><span class="classifier">str</span></dt><dd><p>A given filepath</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>The data of .csv as a DataFrame</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="benchmark.overall_fitting">
+<code class="sig-prename descclassname">benchmark.</code><code class="sig-name descname">overall_fitting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filepath</span></em>, <em class="sig-param"><span class="n">system_information</span></em>, <em class="sig-param"><span class="n">model_function</span></em>, <em class="sig-param"><span class="n">model_function_for_ib</span></em>, <em class="sig-param"><span class="n">fitting_method</span></em><span class="sig-paren">)</span><a class="headerlink" href="#benchmark.overall_fitting" title="Permalink to this definition">¶</a></dt>
+<dd><p>This workflow function helps to do the overall fit, which is the combination of the above data fitting functionality. To use this function, the data format should strictly follows the pattern we used, namely the headings, “x label,MPI Time,Memory time,CPU time,Total Time,x”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath</strong><span class="classifier">str</span></dt><dd><p>A given filepath</p>
+</dd>
+<dt><strong>system_information: str</strong></dt><dd><p>A given system name for define the plot</p>
+</dd>
+<dt><strong>model_function: function</strong></dt><dd><p>Model for fitting the target time data</p>
+</dd>
+<dt><strong>model_function_for_ib: function</strong></dt><dd><p>Model for fitting the target time data perticular for InifiniBnad</p>
+</dd>
+<dt><strong>fit_parameters: numpy.array</strong></dt><dd><p>List of fitting parameters.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>overall_rmse</strong><span class="classifier">list</span></dt><dd><p>A list contants all the Root Mean Squard Error of the fitting results.</p>
+</dd>
+<dt>parameters: list of lists</dt><dd><p>A list contants all the parameter used for fitting in order.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Project Benchmark</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Benchmark Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">Welcome to Project Benchmark’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Jianyue Wang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/content/benchmark-docs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
