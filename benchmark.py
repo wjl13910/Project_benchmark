@@ -247,9 +247,6 @@ def overall_fitting(filepath, system_information, model_function, model_function
 
     x = data["x"]
 
-    # general_plot(data, system_information + " x_value", "x_value")
-    # general_plot(data, system_information + " nodes_cores", "nodes_cores")
-
     parameters = []
     overall_rmse = []
     # cpu fit
@@ -279,15 +276,25 @@ def overall_fitting(filepath, system_information, model_function, model_function
     return parameters, overall_rmse
 
 
-def predict(x_value, target_value, model_function, parameters, title):
+def predict(test_data_path, sample_data_filepath, target_value_type, model_function, parameters, test_system_information, sample_system_information, title):
     """
-    This function works for make prediction.
+    This function works for make prediction. And plot the predict data against the Skylake and Icelake experiment data.
+
+
+
+
     Parameters
     ----------
-    x_value: list
-        A given list of x_value data
-    target_value: list
-        A given list contans target fitting time data
+    test_data_path : str
+        A given filepath    
+    sample_data_filepath : str
+        A given filepath    
+    target_value_type: str
+        A given target value name for plot labels    
+    test_system_information: str
+        A given system name for define the plot
+    sample_system_information: str
+        A given system name for define the plot
     model_function: function
         Model for fitting the target time data
     parameters: numpy.array
@@ -309,28 +316,35 @@ def predict(x_value, target_value, model_function, parameters, title):
         Raise an ValueError if the given model_function is unsupported
 
     """
-    if len(target_value) != len(x_value):
-        raise ValueError("Value length not match")
+
+    test_data = load_data(test_data_path)
+    sample_data = load_data(sample_data_filepath)
+
+    x_test = test_data["x"]
+    x_sample = sample_data["x"]
 
     n = len(parameters)
     if n == 1:
         parameter_a = parameters[0]
-        predict_value = model_function(x_value, parameter_a)
+        predict_value = model_function(x_test, parameter_a)
     elif n == 2:
         parameter_a = parameters[0]
         parameter_b = parameters[1]
-        predict_value = model_function(x_value, parameter_a, parameter_b)
+        predict_value = model_function(x_test, parameter_a, parameter_b)
     elif n == 3:
         parameter_a = parameters[0]
         parameter_b = parameters[1]
         parameter_c = parameters[2]
         predict_value = model_function(
-            x_value, parameter_a, parameter_b, parameter_c)
+            x_test, parameter_a, parameter_b, parameter_c)
     else:
         raise ValueError("Function do not support that model")
 
-    plt.plot(x_value, predict_value, '.--', label="predict data")
-    plt.plot(x_value, target_value, '.-', label='experiment data')
+    plt.plot(x_test, predict_value, '.--', label="predict data")
+    plt.plot(x_test, test_data[target_value_type], '.-',
+             label=test_system_information + ' experiment data')
+    plt.plot(x_sample, sample_data[target_value_type], '.-',
+             label=sample_system_information + '  experiment data')
     plt.title(title)
     plt.xlabel('x_value')
     plt.ylabel("time/s")

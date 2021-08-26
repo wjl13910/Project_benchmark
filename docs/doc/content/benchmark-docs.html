@@ -159,6 +159,40 @@ We are casting the str to Path. Because when the user run it through command lin
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="benchmark.predict">
+<code class="sig-prename descclassname">benchmark.</code><code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">test_data_path</span></em>, <em class="sig-param"><span class="n">sample_data_filepath</span></em>, <em class="sig-param"><span class="n">target_value_type</span></em>, <em class="sig-param"><span class="n">model_function</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">test_system_information</span></em>, <em class="sig-param"><span class="n">sample_system_information</span></em>, <em class="sig-param"><span class="n">title</span></em><span class="sig-paren">)</span><a class="headerlink" href="#benchmark.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function works for make prediction. And plot the predict data against the Skylake and Icelake experiment data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>test_data_path</strong><span class="classifier">str</span></dt><dd><p>A given filepath</p>
+</dd>
+<dt><strong>sample_data_filepath</strong><span class="classifier">str</span></dt><dd><p>A given filepath</p>
+</dd>
+<dt><strong>target_value_type: str</strong></dt><dd><p>A given target value name for plot labels</p>
+</dd>
+<dt><strong>test_system_information: str</strong></dt><dd><p>A given system name for define the plot</p>
+</dd>
+<dt><strong>sample_system_information: str</strong></dt><dd><p>A given system name for define the plot</p>
+</dd>
+<dt><strong>model_function: function</strong></dt><dd><p>Model for fitting the target time data</p>
+</dd>
+<dt><strong>parameters: numpy.array</strong></dt><dd><p>List of fitting parameters.</p>
+</dd>
+<dt><strong>title: str</strong></dt><dd><p>A given title name of the plot</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>predict_value: numpy.array</dt><dd><p>Array contans all the predict value</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 

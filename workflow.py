@@ -37,16 +37,27 @@ print(overall_rmse2)
 # Accroding to the RMSE results. model 2 and model 4 are better than model 1 and 3.
 
 
+# previously we build model based on Skylake data
+# here we use our model to make prediction in Icelake data
+# plot preditions along with Skylake and Icelake data
+
+# perform parameters adjustment
 mb_devided_mb_ref = 204.8/119.21
 cpu_devided_cpu_ref = 6.08/1.331
-memory_adjust_parameter = parameters1[1]/mb_devided_mb_ref
-cpu_adjust_parameter = parameters1[0]/cpu_devided_cpu_ref
+ib_devided_ib_ref = 12.5/7
 
-pred_memory_value = predict(
-    x_value, icelake_general_data['Memory Time'], model_function2, memory_adjust_parameter, 'memory')
+memory_adjust_parameter = parameters1[1] / mb_devided_mb_ref
+cpu_adjust_parameter = parameters1[0] / cpu_devided_cpu_ref
+ib_adjust_parameter = parameters1[2] / ib_devided_ib_ref
 
-pred_cpu_value = predict(
-    x_value, icelake_general_data['CPU Time'], model_function2, cpu_adjust_parameter, 'CPU')
+ib_adjust_parameter[2] = ib_adjust_parameter[2] * ib_devided_ib_ref
 
-pred_cpu_value = predict(
-    x_value, icelake_general_data['MPI Time'], model_function4, parameters1[2], 'MPI')
+# plot data
+pred_cpu_value = predict(icelake_ordered_data, skylake_data, 'CPU Time',
+                         model_function2, cpu_adjust_parameter, "Icelake", "Skylake", "CPU_Time_Prediction")
+
+pred_cpu_value = predict(icelake_ordered_data, skylake_data, 'Memory Time',
+                         model_function2, memory_adjust_parameter, "Icelake", "Skylake", "Memory_Time_Prediction")
+
+pred_cpu_value = predict(icelake_ordered_data, skylake_data, 'MPI Time',
+                         model_function4, ib_adjust_parameter, "Icelake", "Skylake", "MPI_Time_Prediction")
